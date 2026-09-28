@@ -1,0 +1,38 @@
+# Sobe a aplicação DocSage + PostgreSQL com pgvector.
+# Variáveis vêm do .env (lido automaticamente pelo Compose).
+
+services:
+  db:
+    image: pgvector/pgvector:pg16      # PostgreSQL 16 já com a extensão pgvector
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro   # liga o pgvector na 1ª subida
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy      # só sobe a app quando o banco estiver pronto
+    ports:
+      # "127.0.0.1:" limita o acesso à sua própria máquina (não fica exposto na rede local)
+      - "127.0.0.1:${APP_PORT}:8080"
+    volumes:
+      - hfcache:/home/app/.cache        # guarda o modelo de embeddings entre reinícios
+
+volumes:
+  pgdata:
+  hfcache:

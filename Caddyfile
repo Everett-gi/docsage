@@ -1,0 +1,35 @@
+# Configuração do Caddy: proxy reverso + HTTPS automático (Let's Encrypt).
+# As variáveis {$DOMAIN} e {$ACME_EMAIL} vêm do .env.
+
+{
+	# E-mail usado pelo Let's Encrypt para avisos de expiração de certificado.
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN} {
+	# Compressão das respostas
+	encode gzip
+
+	# Cabeçalhos de segurança
+	header {
+		# Força HTTPS por 1 ano (só ative depois de confirmar que o TLS funciona)
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		# Impede o navegador de "adivinhar" o tipo do conteúdo
+		X-Content-Type-Options "nosniff"
+		# Impede que o site seja embutido em iframe (clickjacking)
+		X-Frame-Options "DENY"
+		# Limita o que é enviado no cabeçalho Referer
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# Remove o cabeçalho que revela o servidor usado
+		-Server
+	}
+
+	# Encaminha o tráfego para o container da aplicação (rede interna do Docker).
+	# "app" é o nome do serviço no docker-compose.
+	reverse_proxy app:8080
+
+	# Registro de acessos
+	log {
+		output file /var/log/caddy/access.log
+	}
+}

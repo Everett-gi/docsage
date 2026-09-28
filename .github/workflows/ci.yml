@@ -1,0 +1,58 @@
+# Roda lint, testes e scans de segurança a cada push/PR na branch main.
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      # Os testes cobrem apenas funções puras (app/text_utils.py), então instalamos
+      # só o necessário — evita baixar PyTorch (~2 GB) a cada execução do CI.
+      - name: Instalar dependências de teste
+        run: pip install pypdf pytest ruff
+
+      - name: Lint (ruff)
+        run: ruff check .
+
+      - name: Testes (pytest)
+        run: pytest -q
+
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar ferramentas de segurança
+        run: pip install pip-audit bandit
+
+      # "continue-on-error" evita quebrar o build por vulnerabilidade em dependência
+      # de terceiros. Remova quando quiser que o CI barre o merge nesses casos.
+      - name: Scan de vulnerabilidades nas dependências (pip-audit)
+        run: pip-audit -r requirements.txt
+        continue-on-error: true
+
+      - name: Análise estática de segurança (bandit)
+        run: bandit -r app -ll
+        continue-on-error: true

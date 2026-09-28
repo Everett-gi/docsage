@@ -1,0 +1,20 @@
+# Configuração das ferramentas de qualidade (lint e testes).
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+# E/W = estilo (pycodestyle) · F = erros reais (pyflakes)
+# I = ordenação de imports · B = bugs comuns (bugbear) · S = segurança (bandit)
+select = ["E", "W", "F", "I", "B", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+# Em testes, o uso de "assert" é esperado (S101).
+"tests/*" = ["S101"]
+# B008 alerta sobre chamadas em valores padrão de argumentos, mas Depends()/File()
+# nessa posição é justamente o idioma oficial do FastAPI — aqui é falso positivo.
+"app/main.py" = ["B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,72 @@
+# Stack de PRODUÇÃO: PostgreSQL + aplicação + Caddy (HTTPS automático).
+#
+# Uso no servidor:
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Diferenças em relação ao docker-compose.yml (desenvolvimento):
+#   - a aplicação NÃO expõe porta ao mundo; só o Caddy responde na internet
+#   - o Caddy termina o TLS e faz proxy reverso para a aplicação
+#   - exige DOMAIN e ACME_EMAIL definidos no .env
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    # Sem "ports": a aplicação só é alcançável pelo Caddy, dentro da rede Docker.
+    volumes:
+      - hfcache:/home/app/.cache
+    networks:
+      - internal
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"     # necessário para o desafio HTTP do Let's Encrypt e redirect
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data      # certificados TLS (não apagar: evita rate limit do Let's Encrypt)
+      - caddy_config:/config
+      - caddy_logs:/var/log/caddy
+    depends_on:
+      - app
+    networks:
+      - internal
+
+volumes:
+  pgdata:
+  hfcache:
+  caddy_data:
+  caddy_config:
+  caddy_logs:
+
+networks:
+  internal:

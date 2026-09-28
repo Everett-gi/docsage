@@ -1,0 +1,22 @@
+# --- API web ---
+fastapi==0.115.*
+uvicorn[standard]==0.32.*
+python-multipart==0.0.*          # necessário para upload de arquivos
+
+# --- Banco de dados ---
+sqlalchemy==2.0.*
+psycopg[binary]==3.2.*           # driver PostgreSQL
+pgvector==0.3.*                  # tipo "vector" + busca por similaridade
+
+# --- Configuração ---
+pydantic==2.*
+pydantic-settings==2.*
+
+# --- Processamento de documentos ---
+pypdf==5.*                       # extrair texto de PDFs
+
+# --- Embeddings (modelo LOCAL, gratuito) ---
+sentence-transformers==3.*
+
+# --- LLM (geração das respostas) ---
+anthropic>=0.40

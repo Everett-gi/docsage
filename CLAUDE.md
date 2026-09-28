@@ -12,6 +12,21 @@ do conteúdo enviado, sempre com citação das fontes.
 Projeto de portfólio (fullstack + segurança). Prioridades, nesta ordem:
 **1) segurança · 2) clareza do código · 3) funcionalidade.**
 
+## Modo tutorial
+
+O DocSage tem repositório próprio, mas faz parte da trilha de aprendizado do autor, cujo
+índice fica no monorepo do portfólio
+(https://github.com/Everett-gi/Projetos-e-ideias/blob/main/tutorial/README.md). Ele vem de
+**C e C++** (domina lógica, ponteiros, memória, compilação) e está aprendendo Python.
+
+- Explique cada passo e o **porquê**. Use analogias com C/C++ quando ajudarem.
+- Não explique lógica de programação básica; foque no que é novo: idiomas da linguagem,
+  bibliotecas, ferramentas, arquitetura e segurança.
+- As lições deste projeto ficam em `docs/tutorial/` e terminam com exercícios. Deixe o
+  autor rodar os comandos sempre que possível.
+- Ambiente do autor: Windows 11 · PowerShell · VS Code · Python 3.12 (com o launcher `py`)
+  · Git. Comandos em lições e respostas: sintaxe PowerShell.
+
 ## Stack
 
 - Python 3.12 + FastAPI

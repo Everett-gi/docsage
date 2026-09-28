@@ -4,6 +4,9 @@ Faça perguntas em linguagem natural sobre os seus próprios documentos (PDF/TXT
 As respostas são geradas **apenas** com base no conteúdo enviado, sempre com citação
 das fontes — arquitetura **RAG** (*Retrieval-Augmented Generation*).
 
+> Faz parte de um portfólio de aplicações full-stack com foco em segurança. Os demais
+> projetos ficam em [Everett-gi/Projetos-e-ideias](https://github.com/Everett-gi/Projetos-e-ideias).
+
 ## Stack
 
 - **Python 3.12 + FastAPI**

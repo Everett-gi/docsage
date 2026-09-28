@@ -341,13 +341,17 @@ dig +short docsage-gil.duckdns.org
 
 ```bash
 cd ~
-git clone https://github.com/SEU_USUARIO/docsage.git
+git clone https://github.com/Everett-gi/docsage.git
 cd docsage
 ```
 
 > Se o repositório for privado, gere uma chave SSH no servidor (`ssh-keygen -t ed25519`),
-> adicione a chave pública em *GitHub → Settings → SSH and GPG keys*, e clone via
-> `git@github.com:SEU_USUARIO/docsage.git`.
+> adicione a chave pública em *GitHub → Settings → SSH and GPG keys*, e clone via SSH:
+>
+> ```bash
+> git clone git@github.com:Everett-gi/docsage.git
+> cd docsage
+> ```
 
 ### 11.2 Criar o `.env` de produção
 

@@ -40,7 +40,9 @@ Pergunta:  pergunta -> vetor -> busca top-k -> Claude -> resposta + citações
 
 ## Rodando localmente
 
-Pré-requisitos: Docker e Docker Compose.
+Pré-requisitos: Docker e Docker Compose (no Windows, o Docker Desktop com WSL 2) e uma chave
+da API da Anthropic. O passo a passo completo, do zero, está em
+**[docs/PASSO-A-PASSO.md](docs/PASSO-A-PASSO.md)**.
 
 ```bash
 cp .env.example .env     # depois edite: senha do banco + chave da Anthropic

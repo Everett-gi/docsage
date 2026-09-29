@@ -4,8 +4,8 @@ Do clone do repositório até rodar na sua máquina e publicar no GitHub.
 Depois disso, siga o [DEPLOY.md](./DEPLOY.md) para colocar no ar.
 
 > O DocSage tem **repositório próprio**:
-> [Everett-gi/docsage](https://github.com/Everett-gi/docsage). Os outros projetos do
-> portfólio ficam no monorepo
+> [Everett-gi/docsage](https://github.com/Everett-gi/docsage). A central do portfólio
+> (blueprints dos outros projetos e a trilha de aprendizado) é
 > [Everett-gi/Projetos-e-ideias](https://github.com/Everett-gi/Projetos-e-ideias).
 
 ---
@@ -20,6 +20,26 @@ Depois disso, siga o [DEPLOY.md](./DEPLOY.md) para colocar no ar.
 | **VS Code** (opcional) | editor | https://code.visualstudio.com |
 
 > O Claude Code precisa do **Node.js 18+**: https://nodejs.org
+
+### Antes do Docker: o WSL 2
+
+No Windows, o Docker Desktop roda os containers dentro do **WSL 2** (*Windows Subsystem for
+Linux*): um Linux de verdade, numa máquina virtual leve gerenciada pelo Windows. Containers
+são um recurso do kernel **Linux**, por isso é preciso um Linux por baixo. Confira se ele
+já existe:
+
+```powershell
+wsl --status
+```
+
+Se a resposta disser que o WSL não está instalado:
+
+1. Abra o PowerShell **como administrador** (menu Iniciar → digite "PowerShell" → *Executar
+   como administrador*) e rode `wsl --install`.
+2. **Reinicie o computador.** Na volta, o Ubuntu que veio junto pede um nome de usuário e uma
+   senha para o Linux (não precisam ser iguais aos do Windows).
+3. Só então instale o Docker Desktop. Na instalação, deixe marcada a opção de usar o
+   **WSL 2** (*Use WSL 2 instead of Hyper-V*).
 
 Confirme no PowerShell (se algum comando falhar, a ferramenta não foi instalada):
 
@@ -320,6 +340,7 @@ docker compose -f docker-compose.prod.yml up -d --build
 | Sintoma | Solução |
 |---|---|
 | `docker: command not found` | Docker Desktop não instalado ou não está aberto |
+| Docker Desktop reclama do WSL (`WSL 2 is not installed` ou `WSL update required`) | Veja "Antes do Docker: o WSL 2" na Etapa 0; se já instalado, rode `wsl --update` como administrador e reinicie |
 | `error during connect` / daemon | Abra o Docker Desktop e espere ficar verde |
 | `password authentication failed` | Senha diferente em `POSTGRES_PASSWORD` e `DATABASE_URL` |
 | `type "vector" does not exist` | `docker compose down -v` e suba de novo |
